@@ -104,12 +104,14 @@
 
   /* Advanced section */
   .advanced-section {
-    display: none;
+    display: none !important;
     border-left: 2px solid var(--accent);
     padding-left: 28px;
     margin-left: 0;
   }
-  .advanced-section.show { display: block; animation: fadeUp .4s ease both; }
+  .advanced-section.show { display: block !important; animation: fadeUp .4s ease both; }
+
+  /* Skill gate notice */
   .adv-badge {
     display: inline-block;
     background: var(--accent-light);
@@ -358,26 +360,26 @@
         </div>
         <div class="q-divider"></div>
 
-        <!-- Rating card -->
-        <div class="rating-card" id="ratingCard">
-          <div class="rating-card-label">Your onboarding rating</div>
-          <div class="rating-main">
-            <div class="rating-score-block">
-              <div>
-                <span class="rating-score-big" id="ratingScoreDisplay">—</span>
-                <span class="rating-score-denom"> / 7</span>
-              </div>
-              <div class="rating-score-sub">Onboarding score</div>
-            </div>
-            <div class="rating-group-block">
-              <div class="rating-group-label">Group assigned</div>
-              <div class="rating-group-tag" id="ratingGroupDisplay">—</div>
-            </div>
-          </div>
-          <div class="rating-note">This score is for internal placement only. It will update as you play matches with us.</div>
-        </div>
-
       </div><!-- /advanced-section -->
+
+      <!-- Rating card -->
+      <div class="rating-card" id="ratingCard">
+        <div class="rating-card-label">Your onboarding rating</div>
+        <div class="rating-main">
+          <div class="rating-score-block">
+            <div>
+              <span class="rating-score-big" id="ratingScoreDisplay">—</span>
+              <span class="rating-score-denom"> / 7.0</span>
+            </div>
+            <div class="rating-score-sub" id="ratingSummaryDisplay">Based on your experience, self-rating, and padel skills</div>
+          </div>
+          <div class="rating-group-block">
+            <div class="rating-group-label">Band</div>
+            <div class="rating-group-tag" id="ratingGroupDisplay">—</div>
+          </div>
+        </div>
+        <div class="rating-note">This score is for internal placement only. It will update as you play matches with us.</div>
+      </div>
 
       <!-- 11 Frequency -->
       <div class="q-block">
@@ -481,70 +483,130 @@ function getSkillMode() {
 
 function showHideAdvanced() {
   const mode = getSkillMode();
-  const isAdvanced = mode === "Intermediate" || mode === "Advanced";
-  gateNotice.classList.toggle("show", isAdvanced);
-  advSection.classList.toggle("show", isAdvanced);
-  // Update trailing question numbers
-  const offset = isAdvanced ? 5 : 0;
-  document.getElementById("freqLabel").textContent      = `${String(11 + offset).padStart(2,"0")} — Availability`;
-  document.getElementById("communityLabel").textContent = `${String(12 + offset).padStart(2,"0")} — Community`;
-  document.getElementById("instaLabel").textContent     = `${String(13 + offset).padStart(2,"0")} — Instagram`;
-  document.getElementById("visionLabel").textContent    = `${String(14 + offset).padStart(2,"0")} — Vision`;
+  const isAdv = mode === "Intermediate" || mode === "Advanced";
 
-  if (!isAdvanced) ratingCard.classList.remove("show");
-  else updateRating();
+  if (isAdv) {
+    gateNotice.classList.add("show");
+    advSection.classList.add("show");
+  } else {
+    gateNotice.classList.remove("show");
+    advSection.classList.remove("show");
+  }
+
+  const base = isAdv ? 11 : 6;
+  document.getElementById("freqLabel").textContent      = String(base).padStart(2,"0") + " — Availability";
+  document.getElementById("communityLabel").textContent = String(base+1).padStart(2,"0") + " — Community";
+  document.getElementById("instaLabel").textContent     = String(base+2).padStart(2,"0") + " — Instagram";
+  document.getElementById("visionLabel").textContent    = String(base+3).padStart(2,"0") + " — Vision";
+
+  updateRating();
 }
 
 document.querySelectorAll('input[name="level"]').forEach(r =>
   r.addEventListener("change", showHideAdvanced)
 );
 
-// ── Rating calculation ───────────────────────────────────────
-// Weights (max per skill = weight × 3, normalised so total block = 4.5)
-const WEIGHTS = { wall: 1.1, serve: 0.8, smash: 1.0, doubles: 0.8, ret: 0.8 };
-// Experience block max = 2.5 (experience 0.8, training 0.7, matches 0.5, winrate 0.3, age 0.2)
-// At onboarding we only have self-reported level; map it:
-const EXP_SCORE = { "Beginner": 0, "Intermediate": 1.4, "Advanced": 2.2 };
+// ── Rating calculation (Playtomic scale) ────────────────────
+const WEIGHTS = { wall: 1.25, serve: 0.85, smash: 1.1, doubles: 1.2, ret: 1.1 };
+const EXPERIENCE_BASE = {
+  "Never played": 0.0,
+  "0-3 months": 0.5,
+  "3-12 months": 1.0,
+  "1+ years": 1.75,
+};
+const EXPERIENCE_SKILL_MULTIPLIER = {
+  "Never played": 0.0,
+  "0-3 months": 0.45,
+  "3-12 months": 0.75,
+  "1+ years": 1.0,
+};
+const EXPERIENCE_CAP = {
+  "Never played": 0.5,
+  "0-3 months": 2.5,
+  "3-12 months": 4.5,
+  "1+ years": 6.0,
+};
+const LEVEL_BASE = {
+  Beginner: 0.0,
+  Intermediate: 0.85,
+  Advanced: 1.45,
+};
+const LEVEL_CAP = {
+  Beginner: 2.5,
+  Intermediate: 5.0,
+  Advanced: 6.0,
+};
 
 function getSkillScore(name) {
   const el = document.querySelector(`input[name="${name}"]:checked`);
   return el ? parseInt(el.value) : null;
 }
 
-function getGroupLabel(score) {
-  if (score <= 2.5) return "Group 1 — Beginner";
-  if (score <= 4.0) return "Group 2 — Casual Intermediate";
-  if (score <= 5.5) return "Group 3 — Competitive Intermediate";
-  return "Group 4 — Advanced";
+function getPlaytomicLabel(score) {
+  if (score <= 1.0) return "Initiation";
+  if (score <= 2.0) return "Initiation Intermediate";
+  if (score <= 3.5) return "Intermediate";
+  if (score <= 4.5) return "Intermediate High";
+  if (score <= 5.0) return "Intermediate Advanced";
+  if (score <= 5.5) return "Advanced";
+  return "Elite";
+}
+
+function clamp(num, min, max) {
+  return Math.min(max, Math.max(min, num));
+}
+
+function getSkillContribution(skills, experience) {
+  const rawMax = skills.reduce((sum, key) => sum + (WEIGHTS[key] * 3), 0);
+  const rawScore = skills.reduce((sum, key) => sum + (getSkillScore(key) * WEIGHTS[key]), 0);
+  const normalized = rawScore / rawMax;
+  const weakestSkill = Math.min(...skills.map(getSkillScore));
+  const consistencyBonus = (weakestSkill / 3) * 0.4;
+  return (normalized * 3.0 + consistencyBonus) * EXPERIENCE_SKILL_MULTIPLIER[experience];
+}
+
+function buildRating(level, experience) {
+  if (!level || !experience) return null;
+
+  let raw = EXPERIENCE_BASE[experience] + LEVEL_BASE[level];
+  let summary = "Based on your self-reported experience and level";
+
+  if (level === "Intermediate" || level === "Advanced") {
+    const skills = ["wall", "serve", "smash", "doubles", "ret"];
+    const allAnswered = skills.every(skill => getSkillScore(skill) !== null);
+    if (!allAnswered) return null;
+    raw += getSkillContribution(skills, experience);
+    summary = "Weighted across experience, self-rating, and core padel skills";
+  }
+
+  raw = clamp(raw, 0, Math.min(LEVEL_CAP[level], EXPERIENCE_CAP[experience]));
+  const rounded = Math.round(raw * 2) / 2;
+  return {
+    score: rounded,
+    label: getPlaytomicLabel(rounded),
+    summary,
+  };
 }
 
 function updateRating() {
   const mode = getSkillMode();
-  if (mode !== "Intermediate" && mode !== "Advanced") return;
+  const exp = document.querySelector('input[name="experience"]:checked')?.value || "";
+  const rating = buildRating(mode, exp);
 
-  const skills = ["wall","serve","smash","doubles","ret"];
-  const allAnswered = skills.every(s => getSkillScore(s) !== null);
+  if (!rating) {
+    ratingCard.classList.remove("show");
+    return;
+  }
 
-  if (!allAnswered) { ratingCard.classList.remove("show"); return; }
-
-  // Block 2: skill scores (max raw = sum of weight×3; normalise to 4.5)
-  const rawMax = Object.values(WEIGHTS).reduce((a,b) => a + b*3, 0);
-  let rawScore = 0;
-  skills.forEach(s => { rawScore += (getSkillScore(s) / 3) * WEIGHTS[s] * 3; });
-  const block2 = (rawScore / rawMax) * 4.5;
-
-  // Block 1: experience proxy from level selection (max 2.5)
-  const block1 = EXP_SCORE[mode] || 0;
-
-  const total = Math.min(7, block1 + block2);
-  const rounded = Math.round(total * 10) / 10;
-
-  document.getElementById("ratingScoreDisplay").textContent = rounded.toFixed(1);
-  document.getElementById("ratingGroupDisplay").textContent = getGroupLabel(rounded);
+  document.getElementById("ratingScoreDisplay").textContent = rating.score.toFixed(1);
+  document.getElementById("ratingGroupDisplay").textContent = rating.label;
+  document.getElementById("ratingSummaryDisplay").textContent = rating.summary;
   ratingCard.classList.add("show");
 }
 
 document.querySelectorAll('input[name="wall"], input[name="serve"], input[name="smash"], input[name="doubles"], input[name="ret"]')
+  .forEach(r => r.addEventListener("change", updateRating));
+document.querySelectorAll('input[name="experience"], input[name="level"]')
   .forEach(r => r.addEventListener("change", updateRating));
 
 // ── Progress bar ─────────────────────────────────────────────
@@ -616,12 +678,9 @@ document.getElementById("applyForm").addEventListener("submit", async (e) => {
   btn.textContent = "Submitting…";
 
   // Rating string for sheet
-  let ratingStr = "Auto: Beginner (2.5/7)";
-  if (isAdv) {
-    const scoreEl = document.getElementById("ratingScoreDisplay").textContent;
-    const groupEl = document.getElementById("ratingGroupDisplay").textContent;
-    ratingStr = `${scoreEl}/7 — ${groupEl}`;
-  }
+  let ratingStr = "0.5 — Initiation";
+  const computedRating = buildRating(level, exp);
+  if (computedRating) ratingStr = `${computedRating.score.toFixed(1)} — ${computedRating.label}`;
 
   const finalLocations = locations.includes("Other")
     ? [...locations.filter(v => v !== "Other"), `Other: ${locOther}`]
