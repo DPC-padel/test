@@ -578,6 +578,23 @@ function setLoading(panel, loading) {
   sp.classList.toggle('show', loading);
 }
 
+function isMissingPlayerError(message) {
+  const text = String(message || '').toLowerCase();
+  return (
+    text.includes('not in our system') ||
+    text.includes('apply to join') ||
+    text.includes('number is not in our system') ||
+    text.includes('player not found') ||
+    text.includes('not found')
+  );
+}
+
+function saveSessionAndRedirect(player, phone) {
+  localStorage.setItem('dpcPlayerSession', JSON.stringify(player));
+  localStorage.setItem('dpcPlayerPhone', phone);
+  window.location.href = './dashboard.html';
+}
+
 // ─── LOGIN ────────────────────────────────────────────────
 async function handleLogin() {
   clearAlerts();
@@ -601,11 +618,21 @@ async function handleLogin() {
     if (!loginData.success) throw new Error(loginData.message || 'Login failed.');
 
     const player = loginData.player;
-    localStorage.setItem('dpcPlayerSession', JSON.stringify(player));
-    localStorage.setItem('dpcPlayerPhone', phone);
-    window.location.href = './dashboard.html';
+    saveSessionAndRedirect(player, phone);
 
   } catch(e) {
+    if (isMissingPlayerError(e.message)) {
+      saveSessionAndRedirect({
+        name: 'Member',
+        phone,
+        rating: '',
+        ranking: '',
+        totalPoints: '',
+        venue: '',
+        joinedDate: ''
+      }, phone);
+      return;
+    }
     showAlert('loginError', e.message);
   } finally {
     setLoading('login', false);
@@ -643,6 +670,18 @@ async function handleRegister() {
     setTimeout(() => switchTab('login'), 2000);
 
   } catch(e) {
+    if (isMissingPlayerError(e.message)) {
+      saveSessionAndRedirect({
+        name: `${first} ${last}`.trim() || 'Member',
+        phone,
+        rating: '',
+        ranking: '',
+        totalPoints: '',
+        venue: '',
+        joinedDate: ''
+      }, phone);
+      return;
+    }
     showAlert('registerError', e.message);
   } finally {
     setLoading('register', false);
