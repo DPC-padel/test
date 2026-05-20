@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Profile · //PadelCollectiveIndia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@font-face{font-family:'Berling';src:url('Berling Bold.otf') format('opentype');font-weight:700}
+:root{
+  --bg:#f7f5f2;
+  --surface:#ffffff;
+  --text:#171513;
+  --muted:rgba(23,21,19,.38);
+  --muted2:rgba(23,21,19,.55);
+  --border:rgba(23,21,19,.08);
+  --border2:rgba(23,21,19,.14);
+  --accent:#CB5957;
+  --accent-light:rgba(203,89,87,.1);
+  --heading:'Berling',Georgia,serif;
+  --body:'DM Sans',-apple-system,sans-serif;
+  --green:#3a7d44;
+  --green-light:rgba(58,125,68,.1);
+  --red:#b84d4c;
+  --red-light:rgba(184,77,76,.08);
+  --amber:#b07d2a;
+  --amber-light:rgba(176,125,42,.1);
+}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:60px;padding:0 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(247,245,242,.9);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:var(--heading);font-size:15px;font-weight:700;letter-spacing:-.3px;text-decoration:none;color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-venue{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:var(--border);padding:4px 10px;border-radius:99px}
+.nav-logout{font-size:11px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;transition:color .2s}
+.nav-logout:hover{color:var(--text)}
+
+/* ── PAGE ── */
+.page{max-width:960px;margin:0 auto;padding:80px 32px 60px}
+
+/* ── HERO SECTION ── */
+.hero{
+  padding:48px 0 40px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:40px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:end;
+  gap:32px;
+}
+.hero-eyebrow{font-size:9px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.hero-name{font-family:var(--heading);font-size:clamp(40px,5vw,64px);font-weight:400;line-height:1;letter-spacing:-.5px;margin-bottom:6px}
+.hero-sub{font-size:13px;color:var(--muted2);font-weight:300}
+.hero-rating-block{text-align:right}
+.hero-rating-num{font-family:var(--heading);font-size:72px;font-weight:400;line-height:1;letter-spacing:-2px;color:var(--text)}
+.hero-rating-label{font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:48px}
+.stat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:20px 20px 18px;
+  transition:border-color .2s;
+}
+.stat-card:hover{border-color:var(--border2)}
+.stat-num{font-family:var(--heading);font-size:32px;font-weight:400;letter-spacing:-.5px;line-height:1;margin-bottom:6px}
+.stat-label{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* ── SECTION HEADER ── */
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.section-title{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)}
+
+/* ── FILTERS ── */
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{
+  font-size:11px;font-weight:500;
+  padding:6px 14px;
+  border-radius:99px;
+  border:1px solid var(--border2);
+  background:transparent;
+  color:var(--muted2);
+  cursor:pointer;
+  transition:all .15s;
+  font-family:var(--body);
+}
+.filter-btn:hover{border-color:var(--text);color:var(--text)}
+.filter-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
+
+/* ── MATCH LIST ── */
+.match-list{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+
+.match-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:18px 20px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:16px;
+  align-items:center;
+  transition:border-color .2s,transform .15s;
+  cursor:pointer;
+}
+.match-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+
+.match-type-badge{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;letter-spacing:1px;
+  flex-shrink:0;
+}
+.badge-am{background:var(--amber-light);color:var(--amber)}
+.badge-tm{background:var(--accent-light);color:var(--accent)}
+.badge-ps{background:var(--green-light);color:var(--green)}
+
+.match-main{}
+.match-id-date{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.match-id{font-size:11px;font-weight:600;letter-spacing:1px;color:var(--muted)}
+.match-dot{width:3px;height:3px;border-radius:50%;background:var(--muted);opacity:.4}
+.match-date-txt{font-size:11px;color:var(--muted)}
+.match-title{font-size:14px;font-weight:500;margin-bottom:3px}
+.match-detail{font-size:12px;color:var(--muted2)}
+
+.match-right{text-align:right;flex-shrink:0}
+.match-score-big{font-family:var(--heading);font-size:20px;font-weight:400;letter-spacing:-.3px}
+.match-rank-txt{font-size:11px;color:var(--muted);margin-top:2px}
+.result-pill{
+  display:inline-block;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;
+  padding:3px 9px;border-radius:99px;margin-top:4px;
+}
+.pill-w{background:var(--green-light);color:var(--green)}
+.pill-l{background:var(--red-light);color:var(--red)}
+
+/* ── ROUND SCORES ── */
+.rounds-row{
+  display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;
+}
+.round-chip{
+  font-size:11px;font-weight:500;
+  padding:2px 7px;border-radius:4px;
+  background:rgba(23,21,19,.05);color:var(--muted2);
+}
+
+/* ── EXPANDED MATCH DETAIL ── */
+.match-expand{
+  display:none;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid var(--border);
+  grid-column:1/-1;
+}
+.match-expand.open{display:block}
+.expand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.expand-player{
+  background:var(--bg);
+  border-radius:8px;padding:12px 14px;
+}
+.expand-player-name{font-size:13px;font-weight:500;margin-bottom:2px}
+.expand-player-rating{font-size:11px;color:var(--muted)}
+.expand-player-score{font-family:var(--heading);font-size:18px;margin-top:6px}
+.you-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+
+/* ── EMPTY STATE ── */
+.empty-state{
+  text-align:center;padding:60px 20px;
+  border:1px dashed var(--border2);border-radius:10px;
+}
+.empty-title{font-family:var(--heading);font-size:22px;font-weight:400;margin-bottom:8px}
+.empty-sub{font-size:13px;color:var(--muted)}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .4s ease forwards}
+
+/* ── LOADING SKELETON ── */
+.skeleton{background:linear-gradient(90deg,rgba(23,21,19,.06) 25%,rgba(23,21,19,.1) 50%,rgba(23,21,19,.06) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+@media(max-width:640px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .hero{grid-template-columns:1fr;gap:16px}
+  .hero-rating-block{text-align:left}
+  .expand-grid{grid-template-columns:1fr 1fr}
+  nav{padding:0 20px}
+  .page{padding:72px 20px 48px}
+}
+@media(max-width:400px){
+  .stats-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a class="nav-logo" href="/">//PadelCollective</a>
+  <div class="nav-right">
+    <span class="nav-venue" id="navVenue">—</span>
+    <button class="nav-logout" onclick="handleLogout()">Sign out</button>
+  </div>
+</nav>
+
+<!-- DASHBOARD -->
+<div class="page" id="dashboard">
+
+  <!-- HERO -->
+  <div class="hero fade-in">
+    <div>
+      <div class="hero-eyebrow">Player Profile</div>
+      <div class="hero-name" id="heroName">—</div>
+      <div class="hero-sub" id="heroSub">—</div>
+    </div>
+    <div class="hero-rating-block">
+      <div class="hero-rating-num" id="heroRating">—</div>
+      <div class="hero-rating-label">Rating</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row fade-in">
+    <div class="stat-card">
+      <div class="stat-num" id="statRank">—</div>
+      <div class="stat-label">Ranking</div>
+      <div class="stat-sub" id="statRankSub">within your level</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statMatches">0</div>
+      <div class="stat-label">Matches Played</div>
+      <div class="stat-sub" id="statMatchesSub">all time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statWin">—</div>
+      <div class="stat-label">Win Rate</div>
+      <div class="stat-sub">tournaments & personal</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statPoints">—</div>
+      <div class="stat-label">Total Points</div>
+      <div class="stat-sub">accumulated</div>
+    </div>
+  </div>
+
+  <!-- MATCH LIST -->
+  <div class="section-header">
+    <div class="section-title">Match History</div>
+    <div class="filters">
+      <!-- Date filters -->
+      <button class="filter-btn active" data-filter="date" data-val="30" onclick="setFilter('date',this)">Last 30 days</button>
+      <button class="filter-btn" data-filter="date" data-val="all" onclick="setFilter('date',this)">All time</button>
+      <!-- Divider -->
+      <div style="width:1px;background:var(--border2);margin:0 4px"></div>
+      <!-- Type filters -->
+      <button class="filter-btn active" data-filter="type" data-val="all" onclick="setFilter('type',this)">All</button>
+      <button class="filter-btn" data-filter="type" data-val="AM" onclick="setFilter('type',this)">Americano</button>
+      <button class="filter-btn" data-filter="type" data-val="TM" onclick="setFilter('type',this)">Tournament</button>
+      <button class="filter-btn" data-filter="type" data-val="PS" onclick="setFilter('type',this)">Personal</button>
+    </div>
+  </div>
+
+  <div class="match-list" id="matchList"></div>
+
+</div>
+
+<script>
+const PLAYERS_API = 'https://script.google.com/macros/s/AKfycbyRmqF7c8OU7YxeSYG_EgwH4xR4ir_m6fL6M9Ds8XG7GpPZfB19op-qIDv_1YwLFkmw/exec';
+const MATCHES_API = 'https://script.google.com/macros/s/AKfycbzwz3P9vVxsMxgWwQGoE9AuRToVXEAueHul_RUSNUlEMAC8Rllca3IwhlZTUPAIFVRu/exec';
+
+let allMatches = [];
+let currentPlayer = null;
+let activeFilters = { date: '30', type: 'all' };
+
+// ── SHOW DASHBOARD ─────────────────────────────────────────
+function showDashboard() {
+  const p = currentPlayer;
+  document.getElementById('heroName').textContent   = p.name || '—';
+  document.getElementById('heroRating').textContent = p.rating ?? '—';
+  document.getElementById('heroSub').textContent    = `${p.venue || '—'} · Member since ${p.joinedDate || '—'}`;
+  document.getElementById('navVenue').textContent   = p.venue || '—';
+  document.getElementById('statRank').textContent   = p.ranking ? '#' + p.ranking : '—';
+  document.getElementById('statPoints').textContent = p.totalPoints ?? '—';
+
+  renderStats();
+  renderMatches();
+}
+
+// ── STATS from match data ──────────────────────────────────
+function renderStats() {
+  const filtered = getFiltered('all', 'all'); // always use all for stats
+  const total    = filtered.length;
+
+  // Win rate — only TM and PS
+  const competitive = filtered.filter(m => !String(m.matchId).toUpperCase().startsWith('AM'));
+  const wins = competitive.filter(m => String(m.result).toUpperCase() === 'W').length;
+  const winRate = competitive.length ? Math.round((wins / competitive.length) * 100) + '%' : '—';
+
+  document.getElementById('statMatches').textContent    = total;
+  document.getElementById('statWin').textContent        = winRate;
+  document.getElementById('statMatchesSub').textContent =
+    `${filtered.filter(m => String(m.matchId).toUpperCase().startsWith('AM')).length} americano · ` +
+    `${filtered.filter(m => String(m.matchId).toUpperCase().startsWith('TM')).length} tournament · ` +
+    `${filtered.filter(m => String(m.matchId).toUpperCase().startsWith('PS')).length} personal`;
+}
+
+// ── FILTERS ───────────────────────────────────────────────
+function setFilter(type, btn) {
+  // Deactivate siblings of same filter group
+  document.querySelectorAll(`[data-filter="${type}"]`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilters[type] = btn.dataset.val;
+  renderMatches();
+}
+
+function getFiltered(dateOverride, typeOverride) {
+  const dateVal = dateOverride || activeFilters.date;
+  const typeVal = typeOverride || activeFilters.type;
+  let list = [...allMatches];
+
+  // Date filter
+  if (dateVal === '30') {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 30);
+    list = list.filter(m => {
+      if (!m.date) return true;
+      const d = new Date(m.date);
+      return isNaN(d) ? true : d >= cutoff;
+    });
+  }
+
+  // Type filter
+  if (typeVal !== 'all') {
+    list = list.filter(m => String(m.matchId).toUpperCase().startsWith(typeVal));
+  }
+
+  return list;
+}
+
+// ── RENDER MATCHES ─────────────────────────────────────────
+function renderMatches() {
+  const list     = getFiltered();
+  const container = document.getElementById('matchList');
+
+  if (!list.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-title">No matches found</div>
+        <div class="empty-sub">Try changing the filters or get on court!</div>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = list.map((m, i) => buildMatchCard(m, i)).join('');
+}
+
+function buildMatchCard(m, idx) {
+  const id      = String(m.matchId || '').toUpperCase();
+  const isAm    = id.startsWith('AM');
+  const isTm    = id.startsWith('TM');
+  const typeKey = isAm ? 'AM' : isTm ? 'TM' : 'PS';
+  const typeLabel = isAm ? 'AM' : isTm ? 'TM' : 'PS';
+  const typeName  = isAm ? 'Americano' : isTm ? 'Tournament' : 'Personal';
+
+  const rounds = isAm && m.roundScores
+    ? m.roundScores.split(',').map(s => s.trim())
+    : [];
+
+  const opponentNames = isAm
+    ? (m.opponents || []).map(o => o.playerName).join(', ')
+    : [m.partner && `w/ ${m.partner}`, m.opp1 && `vs ${m.opp1}`, m.opp2 && `& ${m.opp2}`].filter(Boolean).join(' ');
+
+  const rightBlock = isAm
+    ? `<div class="match-score-big">${m.total ?? '—'}</div>
+       <div class="match-rank-txt">rank #${m.rank ?? '—'}</div>`
+    : `<div class="match-score-big">${m.score || '—'}</div>
+       <div class="result-pill ${m.result === 'W' ? 'pill-w' : 'pill-l'}">${m.result || '—'}</div>`;
+
+  const roundsHtml = isAm && rounds.length
+    ? `<div class="rounds-row">${rounds.map(r => `<span class="round-chip">${r}</span>`).join('')}</div>`
+    : '';
+
+  // Build expanded opponents for Americano
+  const expandHtml = isAm
+    ? buildAmericanoExpand(m)
+    : buildMatchExpand(m);
+
+  return `
+    <div class="match-card" onclick="toggleExpand(${idx})">
+      <div class="match-type-badge badge-${typeKey.toLowerCase()}">${typeLabel}</div>
+      <div class="match-main">
+        <div class="match-id-date">
+          <span class="match-id">${m.matchId}</span>
+          <div class="match-dot"></div>
+          <span class="match-date-txt">${m.date || '—'}</span>
+        </div>
+        <div class="match-title">${typeName}</div>
+        <div class="match-detail">${opponentNames || '—'}</div>
+        ${roundsHtml}
+        <div class="match-expand" id="expand-${idx}">
+          ${expandHtml}
+        </div>
+      </div>
+      <div class="match-right">${rightBlock}</div>
+    </div>`;
+}
+
+function buildAmericanoExpand(m) {
+  const players = m.opponents || [];
+  if (!players.length) return '<div style="font-size:12px;color:var(--muted)">No opponent data available</div>';
+  return `
+    <div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">All Players</div>
+    <div class="expand-grid">
+      ${players.map(p => `
+        <div class="expand-player">
+          <div class="expand-player-name">${p.playerName}</div>
+          <div class="expand-player-score">${p.total ?? '—'} pts</div>
+          <div class="expand-player-rating">Rank #${p.rank ?? '—'}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function buildMatchExpand(m) {
+  return `
+    <div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Match Details</div>
+    <div class="expand-grid">
+      <div class="expand-player">
+        <div class="you-label">You</div>
+        <div class="expand-player-name">${currentPlayer?.name || '—'}</div>
+        <div class="expand-player-rating">Rating ${currentPlayer?.rating ?? '—'}</div>
+      </div>
+      ${m.partner ? `<div class="expand-player">
+        <div class="expand-player-name">${m.partner}</div>
+        <div class="expand-player-rating">Partner</div>
+      </div>` : ''}
+      ${m.opp1 ? `<div class="expand-player">
+        <div class="expand-player-name">${m.opp1}</div>
+        <div class="expand-player-rating">Opponent</div>
+      </div>` : ''}
+      ${m.opp2 ? `<div class="expand-player">
+        <div class="expand-player-name">${m.opp2}</div>
+        <div class="expand-player-rating">Opponent</div>
+      </div>` : ''}
+    </div>`;
+}
+
+function toggleExpand(idx) {
+  const el = document.getElementById(`expand-${idx}`);
+  if (el) el.classList.toggle('open');
+}
+
+// ── LOGOUT ─────────────────────────────────────────────────
+function handleLogout() {
+  localStorage.removeItem('dpcPlayerSession');
+  localStorage.removeItem('dpcPlayerPhone');
+  window.location.href = './login.html';
+}
+
+async function bootstrapDashboard() {
+  const savedSession = localStorage.getItem('dpcPlayerSession');
+  const savedPhone = localStorage.getItem('dpcPlayerPhone');
+
+  if (!savedSession || !savedPhone) {
+    window.location.href = './login.html';
+    return;
+  }
+
+  try {
+    currentPlayer = JSON.parse(savedSession);
+  } catch (error) {
+    localStorage.removeItem('dpcPlayerSession');
+    localStorage.removeItem('dpcPlayerPhone');
+    window.location.href = './login.html';
+    return;
+  }
+
+  try {
+    const mRes = await fetch(`${MATCHES_API}?action=getPlayerMatches&phone=${encodeURIComponent(savedPhone)}`);
+    const mData = await mRes.json();
+    allMatches = mData.success ? mData.matches : [];
+  } catch (error) {
+    allMatches = [];
+  }
+
+  showDashboard();
+}
+
+bootstrapDashboard();
+</script>
+</body>
+</html>
