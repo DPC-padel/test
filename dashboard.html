@@ -266,10 +266,20 @@ let chartMode     = 'points';
 async function bootstrapDashboard() {
   const savedSession = localStorage.getItem('dpcPlayerSession');
   const savedPhone   = localStorage.getItem('dpcPlayerPhone');
-  if (!savedSession || !savedPhone) { currentPlayer = { name: "Guest", venue: "—", joiningDate: "—" }; allMatches = []; showDashboard(); return; }
+  if (!savedSession || !savedPhone) { currentPlayer = { name: 'Guest', venue: '—', joiningDate: '—' }; allMatches = []; showDashboard(); return; }
   try { currentPlayer = JSON.parse(savedSession); } catch(e) {
     localStorage.clear(); window.location.href = './login.html'; return;
   }
+  // Fetch latest stats from Master tab (rating, totalPoints, ranking, venue)
+  try {
+    const pRes  = await fetch(`${MATCHES_API}?action=getPlayer&phone=${encodeURIComponent(savedPhone)}`);
+    const pData = await pRes.json();
+    if (pData.success && pData.player) {
+      currentPlayer = { ...currentPlayer, ...pData.player };
+      localStorage.setItem('dpcPlayerSession', JSON.stringify(currentPlayer));
+    }
+  } catch(e) { /* keep session data as fallback */ }
+  // Fetch match history
   try {
     const mRes  = await fetch(`${MATCHES_API}?action=getPlayerMatches&phone=${encodeURIComponent(savedPhone)}`);
     const mData = await mRes.json();
