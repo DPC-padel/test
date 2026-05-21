@@ -619,24 +619,15 @@ async function handleLogin() {
 
     const player = loginData.player;
     saveSessionAndRedirect(player, phone);
+} catch(e) {
 
-  } catch(e) {
-    if (isMissingPlayerError(e.message)) {
-      saveSessionAndRedirect({
-        name: 'Member',
-        phone,
-        rating: '',
-        ranking: '',
-        totalPoints: '',
-        venue: '',
-        joinedDate: ''
-      }, phone);
-      return;
-    }
-    showAlert('loginError', e.message);
-  } finally {
-    setLoading('login', false);
-  }
+  showAlert('loginError', e.message);
+
+} finally {
+
+  setLoading('login', false);
+
+}
 }
 
 // ─── REGISTER ─────────────────────────────────────────────
@@ -669,23 +660,15 @@ async function handleRegister() {
     showAlert('registerSuccess', `Account created for ${first}! You can now log in.`);
     setTimeout(() => switchTab('login'), 2000);
 
-  } catch(e) {
-    if (isMissingPlayerError(e.message)) {
-      saveSessionAndRedirect({
-        name: `${first} ${last}`.trim() || 'Member',
-        phone,
-        rating: '',
-        ranking: '',
-        totalPoints: '',
-        venue: '',
-        joinedDate: ''
-      }, phone);
-      return;
-    }
-    showAlert('registerError', e.message);
-  } finally {
-    setLoading('register', false);
-  }
+  } } catch(e) {
+
+  showAlert('registerError', e.message);
+
+} finally {
+
+  setLoading('register', false);
+
+}
 }
 
 // ─── SHOW DASHBOARD ───────────────────────────────────────
