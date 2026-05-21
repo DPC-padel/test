@@ -322,6 +322,12 @@ nav{
     <div class="sidebar-brand-sub">Member Dashboard</div>
   </div>
   <nav class="sidebar-nav">
+    <a class="sidebar-link" href="https://dpc-padel.github.io/DPC/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><polyline points="9 21 9 12 15 12 15 21"/>
+      </svg>
+      <span>Home</span>
+    </a>
     <a class="sidebar-link active" href="#">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
@@ -350,7 +356,6 @@ nav{
 <nav id="mainNav">
   <a class="nav-logo" href="#">Overview</a>
   <div class="nav-right">
-    <a class="hero-action-btn" href="./calendar.html">Monthly Calendar</a>
   </div>
 </nav>
 
@@ -364,11 +369,8 @@ nav{
       <!-- HERO -->
       <div class="hero fade-in">
         <div>
-          <div class="hero-heading">Overview</div>
-          <div class="hero-subcopy">Your profile, progress, and recent matches at a glance.</div>
-        </div>
-        <div class="hero-actions">
-          <a class="hero-action-btn" href="./leaderboard.html">Leaderboard</a>
+          <div class="hero-heading" id="heroName">—</div>
+          <div class="hero-subcopy" id="heroSub">—</div>
         </div>
       </div>
 
@@ -396,23 +398,6 @@ nav{
         </div>
       </div>
 
-      <!-- PROGRESS GRAPH CTA -->
-      <div class="chart-section fade-in">
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">Performance Over Time</div>
-          </div>
-          <div class="chart-toggle">
-            <button class="chart-toggle-btn active" id="chartBtnPoints" onclick="switchChart('points')">Points Scored</button>
-            <button class="chart-toggle-btn" id="chartBtnRanking" onclick="switchChart('ranking')">Ranking</button>
-          </div>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="perfChart"></canvas>
-          <div class="chart-empty" id="chartEmpty" style="display:none">Not enough match data yet.</div>
-        </div>
-      </div>
-
       <!-- MATCH LIST -->
       <div class="section-header">
         <div class="section-title">Match History</div>
@@ -428,6 +413,23 @@ nav{
       </div>
 
       <div class="match-list" id="matchList"></div>
+
+      <!-- PERFORMANCE CHART -->
+      <div class="chart-section fade-in" style="margin-top:36px">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Performance Over Time</div>
+          </div>
+          <div class="chart-toggle">
+            <button class="chart-toggle-btn active" id="chartBtnPoints" onclick="switchChart('points')">Points Scored</button>
+            <button class="chart-toggle-btn" id="chartBtnRanking" onclick="switchChart('ranking')">Ranking</button>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="perfChart"></canvas>
+          <div class="chart-empty" id="chartEmpty" style="display:none">Not enough match data yet.</div>
+        </div>
+      </div>
 
     </main>
   </div>
@@ -465,8 +467,6 @@ function showDashboard() {
   document.getElementById('heroName').textContent    = p.name  || '—';
   document.getElementById('heroRating').textContent  = p.rating ?? '—';
   document.getElementById('heroSub').textContent     = `${p.venue || '—'} · Member since ${p.joiningDate || '—'}`;
-  document.getElementById('navVenue').textContent    = p.venue || '—';
-  document.getElementById('navName').textContent     = p.name  || '—';
   document.getElementById('statRank').textContent    = p.ranking ? '#' + p.ranking : '—';
   document.getElementById('statPoints').textContent  = p.totalPoints ?? '—';
   renderStats();
