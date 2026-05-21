@@ -36,7 +36,6 @@ html{scroll-behavior:smooth}
 }
 body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden}
 
-/* ── NAV ── */
 nav{
   position:fixed;top:0;left:var(--sidebar-w);right:0;z-index:100;
   height:84px;padding:0 56px;
@@ -44,200 +43,64 @@ nav{
   background:transparent;
 }
 .nav-logo{font-family:var(--heading);font-size:15px;font-weight:700;letter-spacing:-.3px;text-decoration:none;color:var(--text)}
-.nav-right{display:flex;align-items:center;gap:20px}
-.nav-venue{display:none}
-.nav-name{display:none}
 .nav-logout{font-size:11px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;transition:color .2s;font-family:var(--body)}
 .nav-logout:hover{color:var(--text)}
 
-/* ── LEFT SIDEBAR ── */
 .left-sidebar{
-  position:fixed;top:0;right:0;bottom:0;
+  position:fixed;top:0;left:0;bottom:0;
   width:var(--sidebar-w);
-  left:0;right:auto;
   background:var(--sidebar-bg);
   display:flex;flex-direction:column;
   z-index:200;
   border-right:1px solid var(--sidebar-border);
 }
-.sidebar-brand{
-  padding:34px 28px 28px;
-  border-bottom:1px solid var(--sidebar-border);
-}
-.sidebar-brand-logo{
-  font-family:var(--heading);
-  font-size:20px;
-  font-weight:700;
-  line-height:1;
-  color:#fff;
-  text-decoration:none;
-  display:block;
-}
-.sidebar-brand-sub{
-  margin-top:10px;
-  font-size:10px;
-  font-weight:500;
-  letter-spacing:3px;
-  text-transform:uppercase;
-  color:rgba(255,255,255,.35);
-}
-.sidebar-nav{
-  padding:16px 0;
-}
-.sidebar-link{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:14px 28px;
-  color:rgba(255,255,255,.55);
-  text-decoration:none;
-  font-size:14px;
-  font-weight:500;
-  transition:background .2s,color .2s;
-}
-.sidebar-link:hover{
-  color:#fff;
-  background:rgba(255,255,255,.05);
-}
-.sidebar-link.active{
-  color:#fff;
-  background:var(--sidebar-surface);
-}
-.sidebar-link svg{
-  width:18px;height:18px;flex-shrink:0;
-}
-.sidebar-footer{
-  margin-top:auto;
-  padding:20px;
-  border-top:1px solid var(--sidebar-border);
-}
-.sidebar-signout{
-  width:100%;
-  height:44px;
-  border:1px solid rgba(255,255,255,.14);
-  background:transparent;
-  color:rgba(255,255,255,.55);
-  font-family:var(--body);
-  font-size:11px;
-  font-weight:600;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  cursor:pointer;
-  transition:border-color .2s,color .2s,background .2s;
-}
-.sidebar-signout:hover{
-  color:#fff;
-  border-color:rgba(255,255,255,.26);
-  background:rgba(255,255,255,.04);
-}
+.sidebar-brand{padding:34px 28px 28px;border-bottom:1px solid var(--sidebar-border);}
+.sidebar-brand-logo{font-family:var(--heading);font-size:20px;font-weight:700;line-height:1;color:#fff;text-decoration:none;display:block;}
+.sidebar-brand-sub{margin-top:10px;font-size:10px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.35);}
+.sidebar-nav{padding:16px 0;overflow:hidden;}
+.sidebar-link{display:flex;align-items:center;gap:12px;padding:14px 28px;color:rgba(255,255,255,.6) !important;text-decoration:none !important;font-size:14px;font-weight:500;transition:background .2s,color .2s;border:none;background:none;width:100%;cursor:pointer;}
+.sidebar-link:hover{color:#fff !important;background:rgba(255,255,255,.06);}
+.sidebar-link.active{color:#fff !important;background:var(--sidebar-surface);}
+.sidebar-link svg{width:18px;height:18px;flex-shrink:0;stroke:currentColor;}
+.sidebar-footer{margin-top:auto;padding:20px;border-top:1px solid var(--sidebar-border);}
+.sidebar-signout{width:100%;height:44px;border:1px solid rgba(255,255,255,.14);background:transparent;color:rgba(255,255,255,.55);font-family:var(--body);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s,background .2s;}
+.sidebar-signout:hover{color:#fff;border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.04);}
 
-/* ── PAGE LAYOUT ── */
-.page{
-  max-width:none;
-  margin-left:var(--sidebar-w);
-  padding:112px 56px 60px;
-}
-.page-shell{
-  display:grid;
-  grid-template-columns:minmax(0,1fr);
-  gap:0;
-  align-items:start;
-}
+.page{max-width:none;margin-left:var(--sidebar-w);padding:112px 56px 60px;}
 .dashboard-main{min-width:0}
 
-/* ── HERO ── */
-.hero{
-  padding:0;
-  margin-bottom:28px;
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:24px;
-}
-.hero-actions{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-.hero-action-btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  min-width:172px;height:48px;
-  padding:0 22px;
-  background:#0b0b0b;color:#fff;
-  text-decoration:none;
-  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-}
+.hero{padding:0;margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:24px;}
 .hero-heading{font-family:var(--heading);font-size:50px;font-weight:400;line-height:1;letter-spacing:-.8px;margin-bottom:8px}
 .hero-subcopy{font-size:15px;color:#8a857f}
 
-.overview-grid{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:18px;
-  margin-bottom:40px;
-}
-
-/* ── STAT CARDS ── */
 .stats-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-bottom:40px}
-.stat-card{
-  background:var(--surface);border:1px solid rgba(23,21,19,.12);
-  border-radius:0;padding:24px 28px 22px;transition:border-color .2s;
-}
+.stat-card{background:var(--surface);border:1px solid rgba(23,21,19,.12);border-radius:0;padding:24px 28px 22px;transition:border-color .2s;}
 .stat-card:hover{border-color:var(--border2)}
 .stat-num{font-family:var(--heading);font-size:44px;font-weight:400;letter-spacing:-.8px;line-height:1;margin-bottom:14px}
 .stat-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#8c8781}
 .stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
 
-/* ── CHART SECTION ── */
-.chart-section{
-  background:var(--surface);border:1px solid rgba(23,21,19,.12);
-  border-radius:0;padding:28px 30px;margin-bottom:36px;
-}
+.chart-section{background:var(--surface);border:1px solid rgba(23,21,19,.12);border-radius:0;padding:28px 30px;margin-bottom:36px;}
 .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
 .chart-title{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#8c8781}
 .chart-toggle{display:flex;gap:6px}
-.chart-toggle-btn{
-  font-size:11px;font-weight:500;padding:5px 14px;
-  border-radius:99px;border:1px solid var(--border2);
-  background:transparent;color:var(--muted2);
-  cursor:pointer;transition:all .15s;font-family:var(--body);
-}
+.chart-toggle-btn{font-size:11px;font-weight:500;padding:5px 14px;border-radius:99px;border:1px solid var(--border2);background:transparent;color:var(--muted2);cursor:pointer;transition:all .15s;font-family:var(--body);}
 .chart-toggle-btn:hover{border-color:var(--text);color:var(--text)}
 .chart-toggle-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
 .chart-wrap{position:relative;height:200px}
-.chart-empty{
-  display:flex;align-items:center;justify-content:center;
-  height:200px;font-size:13px;color:var(--muted);
-}
+.chart-empty{display:flex;align-items:center;justify-content:center;height:200px;font-size:13px;color:var(--muted);}
 
-/* ── SECTION HEADER ── */
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
 .section-title{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#8c8781}
 .filters{display:flex;gap:6px;flex-wrap:wrap}
-.filter-btn{
-  font-size:11px;font-weight:500;padding:6px 13px;
-  border-radius:99px;border:1px solid var(--border2);
-  background:transparent;color:var(--muted2);
-  cursor:pointer;transition:all .15s;font-family:var(--body);
-}
+.filter-btn{font-size:11px;font-weight:500;padding:6px 13px;border-radius:99px;border:1px solid var(--border2);background:transparent;color:var(--muted2);cursor:pointer;transition:all .15s;font-family:var(--body);}
 .filter-btn:hover{border-color:var(--text);color:var(--text)}
 .filter-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
 
-/* ── MATCH LIST ── */
 .match-list{display:flex;flex-direction:column;gap:8px;margin-top:16px}
-.match-card{
-  background:var(--surface);border:1px solid rgba(23,21,19,.12);
-  border-radius:0;padding:20px 22px;
-  display:grid;grid-template-columns:auto 1fr auto;
-  gap:16px;align-items:center;
-  transition:border-color .2s,transform .15s;cursor:pointer;
-}
+.match-card{background:var(--surface);border:1px solid rgba(23,21,19,.12);border-radius:0;padding:20px 22px;display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;transition:border-color .2s,transform .15s;cursor:pointer;}
 .match-card:hover{border-color:var(--border2);transform:translateY(-1px)}
-.match-type-badge{
-  width:36px;height:36px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;font-weight:700;letter-spacing:1px;flex-shrink:0;
-}
+.match-type-badge{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;letter-spacing:1px;flex-shrink:0;}
 .badge-am{background:var(--amber-light);color:var(--amber)}
 .badge-tm{background:var(--accent-light);color:var(--accent)}
 .badge-ps{background:var(--green-light);color:var(--green)}
@@ -267,37 +130,8 @@ nav{
 .empty-title{font-family:var(--heading);font-size:22px;font-weight:400;margin-bottom:8px}
 .empty-sub{font-size:13px;color:var(--muted)}
 
-/* ── GRAPH MODAL ── */
-.modal-overlay{
-  position:fixed;inset:0;z-index:300;
-  background:rgba(23,21,19,.5);
-  backdrop-filter:blur(6px);
-  display:none;align-items:center;justify-content:center;padding:32px;
-}
-.modal-overlay.open{display:flex}
-.modal-box{
-  background:var(--surface);border-radius:16px;
-  width:100%;max-width:700px;padding:32px;
-  position:relative;
-  max-height:90vh;overflow-y:auto;
-}
-.modal-close{
-  position:absolute;top:20px;right:20px;
-  width:32px;height:32px;border-radius:50%;
-  background:var(--bg);border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--muted2);transition:color .2s;
-}
-.modal-close:hover{color:var(--text)}
-.modal-title{font-family:var(--heading);font-size:28px;font-weight:400;margin-bottom:6px;letter-spacing:-.3px}
-.modal-sub{font-size:12px;color:var(--muted);margin-bottom:24px}
-.modal-toggle{display:flex;gap:8px;margin-bottom:24px}
-.modal-chart-wrap{position:relative;height:280px}
-
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeIn .4s ease forwards}
-.skeleton{background:linear-gradient(90deg,rgba(23,21,19,.06) 25%,rgba(23,21,19,.1) 50%,rgba(23,21,19,.06) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 @media(max-width:768px){
   :root{--sidebar-w:0px}
@@ -305,9 +139,6 @@ nav{
   nav{left:0;padding:0 20px;height:72px}
   .page{margin-left:0;padding:92px 20px 48px}
   .hero{flex-direction:column;align-items:flex-start}
-  .hero-actions{width:100%}
-  .hero-action-btn{width:100%}
-  .overview-grid,
   .stats-row{grid-template-columns:repeat(2,1fr)}
   .expand-grid{grid-template-columns:1fr 1fr}
 }
@@ -315,14 +146,13 @@ nav{
 </head>
 <body>
 
-<!-- LEFT SIDEBAR -->
 <aside class="left-sidebar">
   <div class="sidebar-brand">
     <a class="sidebar-brand-logo" href="/">Delhi / Padel</a>
     <div class="sidebar-brand-sub">Member Dashboard</div>
   </div>
-  <nav class="sidebar-nav">
-    <a class="sidebar-link" href="https://dpc-padel.github.io/DPC/">
+  <div class="sidebar-nav">
+    <a class="sidebar-link" href="/">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><polyline points="9 21 9 12 15 12 15 21"/>
       </svg>
@@ -346,27 +176,20 @@ nav{
       </svg>
       <span>Monthly Calendar</span>
     </a>
-  </nav>
+  </div>
   <div class="sidebar-footer">
     <button class="sidebar-signout" onclick="handleLogout()">Sign Out</button>
   </div>
 </aside>
 
-<!-- NAV -->
-<nav id="mainNav">
-  <a class="nav-logo" href="#">Overview</a>
-  <div class="nav-right">
-  </div>
+<nav id="mainNav" style="display:none">
+  <span class="nav-logo">My Profile</span>
 </nav>
 
-<!-- DASHBOARD -->
 <div class="page" id="dashboard">
   <div class="page-shell">
-
-    <!-- MAIN CONTENT -->
     <main class="dashboard-main">
 
-      <!-- HERO -->
       <div class="hero fade-in">
         <div>
           <div class="hero-heading" id="heroName">—</div>
@@ -374,7 +197,6 @@ nav{
         </div>
       </div>
 
-      <!-- STATS -->
       <div class="stats-row fade-in">
         <div class="stat-card">
           <div class="stat-num" id="statRank">—</div>
@@ -394,11 +216,10 @@ nav{
         <div class="stat-card">
           <div class="stat-num" id="heroRating">—</div>
           <div class="stat-label">Rating</div>
-          <div class="stat-sub" id="heroSub">—</div>
+          <div class="stat-sub" id="heroRatingSub">—</div>
         </div>
       </div>
 
-      <!-- MATCH LIST -->
       <div class="section-header">
         <div class="section-title">Match History</div>
         <div class="filters">
@@ -414,12 +235,9 @@ nav{
 
       <div class="match-list" id="matchList"></div>
 
-      <!-- PERFORMANCE CHART -->
       <div class="chart-section fade-in" style="margin-top:36px">
         <div class="chart-header">
-          <div>
-            <div class="chart-title">Performance Over Time</div>
-          </div>
+          <div class="chart-title">Performance Over Time</div>
           <div class="chart-toggle">
             <button class="chart-toggle-btn active" id="chartBtnPoints" onclick="switchChart('points')">Points Scored</button>
             <button class="chart-toggle-btn" id="chartBtnRanking" onclick="switchChart('ranking')">Ranking</button>
@@ -439,17 +257,16 @@ nav{
 const PLAYERS_API = 'https://script.google.com/macros/s/AKfycbyRmqF7c8OU7YxeSYG_EgwH4xR4ir_m6fL6M9Ds8XG7GpPZfB19op-qIDv_1YwLFkmw/exec';
 const MATCHES_API = 'https://script.google.com/macros/s/AKfycbzwz3P9vVxsMxgWwQGoE9AuRToVXEAueHul_RUSNUlEMAC8Rllca3IwhlZTUPAIFVRu/exec';
 
-let allMatches     = [];
-let currentPlayer  = null;
-let activeFilters  = { date: '30', type: 'all' };
-let perfChart      = null;
-let chartMode      = 'points'; // 'points' or 'ranking'
+let allMatches    = [];
+let currentPlayer = null;
+let activeFilters = { date: '30', type: 'all' };
+let perfChart     = null;
+let chartMode     = 'points';
 
-// ── BOOTSTRAP ─────────────────────────────────────────────
 async function bootstrapDashboard() {
   const savedSession = localStorage.getItem('dpcPlayerSession');
   const savedPhone   = localStorage.getItem('dpcPlayerPhone');
-  if (!savedSession || !savedPhone) { window.location.href = './login.html'; return; }
+  if (!savedSession || !savedPhone) { currentPlayer = { name: "Guest", venue: "—", joiningDate: "—" }; allMatches = []; showDashboard(); return; }
   try { currentPlayer = JSON.parse(savedSession); } catch(e) {
     localStorage.clear(); window.location.href = './login.html'; return;
   }
@@ -461,20 +278,18 @@ async function bootstrapDashboard() {
   showDashboard();
 }
 
-// ── SHOW DASHBOARD ─────────────────────────────────────────
 function showDashboard() {
   const p = currentPlayer;
-  document.getElementById('heroName').textContent    = p.name  || '—';
-  document.getElementById('heroRating').textContent  = p.rating ?? '—';
-  document.getElementById('heroSub').textContent     = `${p.venue || '—'} · Member since ${p.joiningDate || '—'}`;
-  document.getElementById('statRank').textContent    = p.ranking ? '#' + p.ranking : '—';
-  document.getElementById('statPoints').textContent  = p.totalPoints ?? '—';
+  document.getElementById('heroName').textContent     = p.name  || '—';
+  document.getElementById('heroRating').textContent   = p.rating ?? '—';
+  document.getElementById('heroSub').textContent      = `${p.venue || '—'} · Member since ${p.joiningDate || '—'}`;
+  document.getElementById('statRank').textContent     = p.ranking ? '#' + p.ranking : '—';
+  document.getElementById('statPoints').textContent   = p.totalPoints ?? '—';
   renderStats();
   renderMatches();
   renderChart('points');
 }
 
-// ── STATS ──────────────────────────────────────────────────
 function renderStats() {
   const all   = getFiltered('all', 'all');
   const total = all.length;
@@ -485,7 +300,6 @@ function renderStats() {
     `${all.filter(m=>String(m.matchId).toUpperCase().startsWith('PS')).length} personal`;
 }
 
-// ── CHART ──────────────────────────────────────────────────
 function switchChart(mode) {
   chartMode = mode;
   document.getElementById('chartBtnPoints').classList.toggle('active', mode === 'points');
@@ -496,93 +310,36 @@ function switchChart(mode) {
 function renderChart(mode) {
   const canvas = document.getElementById('perfChart');
   const empty  = document.getElementById('chartEmpty');
-
-  // Sort all matches by date
-  const sorted = [...allMatches]
-    .filter(m => m.date)
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
-
+  const sorted = [...allMatches].filter(m => m.date).sort((a, b) => new Date(a.date) - new Date(b.date));
   if (sorted.length < 2) {
-    canvas.style.display = 'none';
-    empty.style.display  = 'flex';
-    return;
+    canvas.style.display = 'none'; empty.style.display = 'flex'; return;
   }
-  canvas.style.display = 'block';
-  empty.style.display  = 'none';
-
+  canvas.style.display = 'block'; empty.style.display = 'none';
   const labels = sorted.map(m => m.date);
-  let   data, label, color, yReverse;
-
+  let data, label, color, yReverse;
   if (mode === 'points') {
-    // Cumulative points — use total from Americano, or 0 for TM/PS for now
     let cumulative = 0;
-    data = sorted.map(m => {
-      const pts = Number(m.total) || 0;
-      cumulative += pts;
-      return cumulative;
-    });
-    label    = 'Cumulative Points';
-    color    = '#CB5957';
-    yReverse = false;
+    data = sorted.map(m => { const pts = Number(m.total) || 0; cumulative += pts; return cumulative; });
+    label = 'Cumulative Points'; color = '#CB5957'; yReverse = false;
   } else {
-    // Ranking over time — lower is better so reverse Y
     data = sorted.map(m => Number(m.rank) || null);
-    label    = 'Ranking';
-    color    = '#171513';
-    yReverse = true;
+    label = 'Ranking'; color = '#171513'; yReverse = true;
   }
-
   if (perfChart) { perfChart.destroy(); perfChart = null; }
-
   perfChart = new Chart(canvas, {
     type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label,
-        data,
-        borderColor: color,
-        backgroundColor: color + '18',
-        borderWidth: 2,
-        pointBackgroundColor: color,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        fill: true,
-        tension: 0.35,
-        spanGaps: true,
-      }]
-    },
+    data: { labels, datasets: [{ label, data, borderColor: color, backgroundColor: color + '18', borderWidth: 2, pointBackgroundColor: color, pointRadius: 4, pointHoverRadius: 6, fill: true, tension: 0.35, spanGaps: true }] },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#171513',
-          titleColor: 'rgba(255,255,255,.5)',
-          bodyColor: '#fff',
-          padding: 10,
-          cornerRadius: 8,
-          titleFont: { size: 10, family: 'DM Sans' },
-          bodyFont:  { size: 13, family: 'DM Sans', weight: '600' },
-        }
-      },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#171513', titleColor: 'rgba(255,255,255,.5)', bodyColor: '#fff', padding: 10, cornerRadius: 8, titleFont: { size: 10, family: 'DM Sans' }, bodyFont: { size: 13, family: 'DM Sans', weight: '600' } } },
       scales: {
-        x: {
-          grid: { color: 'rgba(23,21,19,.05)' },
-          ticks: { font: { size: 10, family: 'DM Sans' }, color: 'rgba(23,21,19,.4)', maxTicksLimit: 8 }
-        },
-        y: {
-          reverse: yReverse,
-          grid: { color: 'rgba(23,21,19,.05)' },
-          ticks: { font: { size: 10, family: 'DM Sans' }, color: 'rgba(23,21,19,.4)', maxTicksLimit: 6 }
-        }
+        x: { grid: { color: 'rgba(23,21,19,.05)' }, ticks: { font: { size: 10, family: 'DM Sans' }, color: 'rgba(23,21,19,.4)', maxTicksLimit: 8 } },
+        y: { reverse: yReverse, grid: { color: 'rgba(23,21,19,.05)' }, ticks: { font: { size: 10, family: 'DM Sans' }, color: 'rgba(23,21,19,.4)', maxTicksLimit: 6 } }
       }
     }
   });
 }
 
-// ── FILTERS ───────────────────────────────────────────────
 function setFilter(type, btn) {
   document.querySelectorAll(`[data-filter="${type}"]`).forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -598,13 +355,10 @@ function getFiltered(dateOverride, typeOverride) {
     const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30);
     list = list.filter(m => { if (!m.date) return true; const d = new Date(m.date); return isNaN(d) ? true : d >= cutoff; });
   }
-  if (typeVal !== 'all') {
-    list = list.filter(m => String(m.matchId).toUpperCase().startsWith(typeVal));
-  }
+  if (typeVal !== 'all') list = list.filter(m => String(m.matchId).toUpperCase().startsWith(typeVal));
   return list;
 }
 
-// ── MATCH LIST ─────────────────────────────────────────────
 function renderMatches() {
   const list      = getFiltered();
   const container = document.getElementById('matchList');
@@ -629,45 +383,32 @@ function buildMatchCard(m, idx) {
   const rightBlock = isAm
     ? `<div class="match-score-big">${m.total??'—'}</div><div class="match-rank-txt">rank #${m.rank??'—'}</div>`
     : `<div class="match-score-big">${m.score||'—'}</div><div class="result-pill ${m.result==='W'?'pill-w':'pill-l'}">${m.result||'—'}</div>`;
-  const roundsHtml = isAm && rounds.length
-    ? `<div class="rounds-row">${rounds.map(r=>`<span class="round-chip">${r}</span>`).join('')}</div>` : '';
+  const roundsHtml = isAm && rounds.length ? `<div class="rounds-row">${rounds.map(r=>`<span class="round-chip">${r}</span>`).join('')}</div>` : '';
   const expandHtml = isAm ? buildAmericanoExpand(m) : buildMatchExpand(m);
-  return `
-    <div class="match-card" onclick="toggleExpand(${idx})">
-      <div class="match-type-badge badge-${typeKey}">${typeLabel}</div>
-      <div class="match-main">
-        <div class="match-id-date">
-          <span class="match-id">${m.matchId}</span>
-          <div class="match-dot"></div>
-          <span class="match-date-txt">${m.date||'—'}</span>
-        </div>
-        <div class="match-title">${typeName}</div>
-        <div class="match-detail">${opponentNames||'—'}</div>
-        ${roundsHtml}
-        <div class="match-expand" id="expand-${idx}">${expandHtml}</div>
-      </div>
-      <div class="match-right">${rightBlock}</div>
-    </div>`;
+  return `<div class="match-card" onclick="toggleExpand(${idx})">
+    <div class="match-type-badge badge-${typeKey}">${typeLabel}</div>
+    <div class="match-main">
+      <div class="match-id-date"><span class="match-id">${m.matchId}</span><div class="match-dot"></div><span class="match-date-txt">${m.date||'—'}</span></div>
+      <div class="match-title">${typeName}</div>
+      <div class="match-detail">${opponentNames||'—'}</div>
+      ${roundsHtml}
+      <div class="match-expand" id="expand-${idx}">${expandHtml}</div>
+    </div>
+    <div class="match-right">${rightBlock}</div>
+  </div>`;
 }
 
 function buildAmericanoExpand(m) {
   const players = m.opponents||[];
   if (!players.length) return '<div style="font-size:12px;color:var(--muted)">No opponent data available</div>';
   return `<div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">All Players</div>
-    <div class="expand-grid">${players.map(p=>`<div class="expand-player">
-      <div class="expand-player-name">${p.playerName}</div>
-      <div class="expand-player-score">${p.total??'—'} pts</div>
-      <div class="expand-player-rating">Rank #${p.rank??'—'}</div>
-    </div>`).join('')}</div>`;
+    <div class="expand-grid">${players.map(p=>`<div class="expand-player"><div class="expand-player-name">${p.playerName}</div><div class="expand-player-score">${p.total??'—'} pts</div><div class="expand-player-rating">Rank #${p.rank??'—'}</div></div>`).join('')}</div>`;
 }
 
 function buildMatchExpand(m) {
   return `<div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Match Details</div>
     <div class="expand-grid">
-      <div class="expand-player"><div class="you-label">You</div>
-        <div class="expand-player-name">${currentPlayer?.name||'—'}</div>
-        <div class="expand-player-rating">Rating ${currentPlayer?.rating??'—'}</div>
-      </div>
+      <div class="expand-player"><div class="you-label">You</div><div class="expand-player-name">${currentPlayer?.name||'—'}</div><div class="expand-player-rating">Rating ${currentPlayer?.rating??'—'}</div></div>
       ${m.partner?`<div class="expand-player"><div class="expand-player-name">${m.partner}</div><div class="expand-player-rating">Partner</div></div>`:''}
       ${m.opp1?`<div class="expand-player"><div class="expand-player-name">${m.opp1}</div><div class="expand-player-rating">Opponent</div></div>`:''}
       ${m.opp2?`<div class="expand-player"><div class="expand-player-name">${m.opp2}</div><div class="expand-player-rating">Opponent</div></div>`:''}
@@ -679,7 +420,6 @@ function toggleExpand(idx) {
   if (el) el.classList.toggle('open');
 }
 
-// ── LOGOUT ─────────────────────────────────────────────────
 function handleLogout() {
   localStorage.removeItem('dpcPlayerSession');
   localStorage.removeItem('dpcPlayerPhone');
