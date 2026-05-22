@@ -660,7 +660,7 @@ async function handleRegister() {
     showAlert('registerSuccess', `Account created for ${first}! You can now log in.`);
     setTimeout(() => switchTab('login'), 2000);
 
-  } } catch(e) {
+  }  catch(e) {
 
   showAlert('registerError', e.message);
 
