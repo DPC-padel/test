@@ -263,6 +263,13 @@ let activeFilters = { date: '30', type: 'all' };
 let perfChart     = null;
 let chartMode     = 'points';
 
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return String(dateStr); // already plain text, return as-is
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
 async function bootstrapDashboard() {
   const savedSession = localStorage.getItem('dpcPlayerSession');
   const savedPhone   = localStorage.getItem('dpcPlayerPhone');
@@ -322,16 +329,24 @@ function switchChart(mode) {
 }
 
 function parseHistory(historyStr) {
-  // Parses "12.05.2026, 4; 17.05.2026, 5" into [{date, value}]
+  // Parses "22.05.2026, 3; 29.05.2026, 3.5" into [{date, value}]
   if (!historyStr) return [];
   return historyStr.split(';').map(entry => {
-    const parts = entry.trim().split(',');
-    if (parts.length < 2) return null;
-    const dateStr = parts[0].trim(); // dd.MM.yyyy
-    const value   = parseFloat(parts[1].trim());
-    // Convert dd.MM.yyyy to Date
-    const [dd, mm, yyyy] = dateStr.split('.');
-    return { date: `${dd}/${mm}/${yyyy}`, value: isNaN(value) ? null : value };
+    entry = entry.trim();
+    if (!entry) return null;
+    // Find last comma to split date from value
+    const lastComma = entry.lastIndexOf(',');
+    if (lastComma === -1) return null;
+    const dateStr = entry.substring(0, lastComma).trim(); // dd.MM.yyyy
+    const value   = parseFloat(entry.substring(lastComma + 1).trim());
+    // Format date nicely for chart label
+    const parts = dateStr.split('.');
+    if (parts.length === 3) {
+      const [dd, mm, yyyy] = parts;
+      const months = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return { date: `${dd} ${months[parseInt(mm)] || mm}`, value: isNaN(value) ? null : value };
+    }
+    return { date: dateStr, value: isNaN(value) ? null : value };
   }).filter(Boolean);
 }
 
@@ -341,9 +356,9 @@ function renderChart(mode) {
   let labels, data, label, color, yReverse;
 
   if (mode === 'rating') {
-    // Use ratingHistory from master
+    // Parse ratingHistory string: "22.05.2026, 3; 29.05.2026, 3.5"
     const history = parseHistory(currentPlayer?.ratingHistory || '');
-    if (history.length < 2) {
+    if (history.length < 1) {
       canvas.style.display = 'none'; empty.style.display = 'flex'; return;
     }
     labels   = history.map(h => h.date);
@@ -353,17 +368,16 @@ function renderChart(mode) {
     yReverse = false;
 
   } else {
-    // Points — sum total from all Americano matches sorted by date
+    // Points per match — non-cumulative, Americano only
     const sorted = [...allMatches]
       .filter(m => m.date && String(m.matchId).toUpperCase().includes('AM'))
       .sort((a, b) => new Date(a.date) - new Date(b.date));
-    if (sorted.length < 2) {
+    if (sorted.length < 1) {
       canvas.style.display = 'none'; empty.style.display = 'flex'; return;
     }
-    let cumulative = 0;
-    labels   = sorted.map(m => m.date);
-    data     = sorted.map(m => { cumulative += Number(m.total) || 0; return cumulative; });
-    label    = 'Cumulative Points';
+    labels   = sorted.map(m => formatDate(m.date));
+    data     = sorted.map(m => Number(m.total) || 0);
+    label    = 'Points Scored';
     color    = '#CB5957';
     yReverse = false;
   }
@@ -433,7 +447,7 @@ function buildMatchCard(m, idx) {
   return `<div class="match-card" onclick="toggleExpand(${idx})">
     <div class="match-type-badge badge-${typeKey}">${typeLabel}</div>
     <div class="match-main">
-      <div class="match-id-date"><span class="match-id">${m.matchId}</span><div class="match-dot"></div><span class="match-date-txt">${m.date||'—'}</span></div>
+      <div class="match-id-date"><span class="match-id">${m.matchId}</span><div class="match-dot"></div><span class="match-date-txt">${formatDate(m.date)||'—'}</span></div>
       <div class="match-title">${typeName}</div>
       <div class="match-detail">${opponentNames||'—'}</div>
       ${roundsHtml}
@@ -447,7 +461,11 @@ function buildAmericanoExpand(m) {
   const players = m.opponents||[];
   if (!players.length) return '<div style="font-size:12px;color:var(--muted)">No opponent data available</div>';
   return `<div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">All Players</div>
-    <div class="expand-grid">${players.map(p=>`<div class="expand-player"><div class="expand-player-name">${p.playerName}</div><div class="expand-player-score">${p.total??'—'} pts</div><div class="expand-player-rating">Rank #${p.rank??'—'}</div></div>`).join('')}</div>`;
+    <div class="expand-grid">${players.map(p=>`<div class="expand-player">
+      <div class="expand-player-name">${p.playerName}</div>
+      <div class="expand-player-score">${p.total??'—'} pts</div>
+      <div class="expand-player-rating">Rank #${p.rank??'—'}${p.rating != null ? ' · Rating ' + p.rating : ''}</div>
+    </div>`).join('')}</div>`;
 }
 
 function buildMatchExpand(m) {
