@@ -240,7 +240,7 @@ nav{
           <div class="chart-title">Performance Over Time</div>
           <div class="chart-toggle">
             <button class="chart-toggle-btn active" id="chartBtnPoints" onclick="switchChart('points')">Points Scored</button>
-            <button class="chart-toggle-btn" id="chartBtnRanking" onclick="switchChart('ranking')">Ranking</button>
+            <button class="chart-toggle-btn" id="chartBtnRanking" onclick="switchChart('rating')">Rating</button>
           </div>
         </div>
         <div class="chart-wrap">
@@ -294,7 +294,11 @@ function showDashboard() {
   document.getElementById('heroRating').textContent   = p.rating ?? '—';
   document.getElementById('heroSub').textContent      = `${p.venue || '—'} · Member since ${p.joiningDate || '—'}`;
   document.getElementById('statRank').textContent     = p.ranking ? '#' + p.ranking : '—';
-  document.getElementById('statPoints').textContent   = p.totalPoints ?? '—';
+  // Total points calculated from all Americano match totals
+  const totalPts = allMatches
+    .filter(m => String(m.matchId).toUpperCase().includes('AM'))
+    .reduce((sum, m) => sum + (Number(m.total) || 0), 0);
+  document.getElementById('statPoints').textContent = totalPts || (p.totalPoints ?? '—');
   renderStats();
   renderMatches();
   renderChart('points');
@@ -305,36 +309,67 @@ function renderStats() {
   const total = all.length;
   document.getElementById('statMatches').textContent    = total;
   document.getElementById('statMatchesSub').textContent =
-    `${all.filter(m=>String(m.matchId).toUpperCase().startsWith('AM')).length} americano · ` +
-    `${all.filter(m=>String(m.matchId).toUpperCase().startsWith('TM')).length} tournament · ` +
-    `${all.filter(m=>String(m.matchId).toUpperCase().startsWith('PS')).length} personal`;
+    `${all.filter(m=>String(m.matchId).toUpperCase().includes('AM')).length} americano · ` +
+    `${all.filter(m=>String(m.matchId).toUpperCase().includes('TM')).length} tournament · ` +
+    `${all.filter(m=>String(m.matchId).toUpperCase().includes('PS')).length} personal`;
 }
 
 function switchChart(mode) {
   chartMode = mode;
   document.getElementById('chartBtnPoints').classList.toggle('active', mode === 'points');
-  document.getElementById('chartBtnRanking').classList.toggle('active', mode === 'ranking');
+  document.getElementById('chartBtnRanking').classList.toggle('active', mode === 'rating');
   renderChart(mode);
+}
+
+function parseHistory(historyStr) {
+  // Parses "12.05.2026, 4; 17.05.2026, 5" into [{date, value}]
+  if (!historyStr) return [];
+  return historyStr.split(';').map(entry => {
+    const parts = entry.trim().split(',');
+    if (parts.length < 2) return null;
+    const dateStr = parts[0].trim(); // dd.MM.yyyy
+    const value   = parseFloat(parts[1].trim());
+    // Convert dd.MM.yyyy to Date
+    const [dd, mm, yyyy] = dateStr.split('.');
+    return { date: `${dd}/${mm}/${yyyy}`, value: isNaN(value) ? null : value };
+  }).filter(Boolean);
 }
 
 function renderChart(mode) {
   const canvas = document.getElementById('perfChart');
   const empty  = document.getElementById('chartEmpty');
-  const sorted = [...allMatches].filter(m => m.date).sort((a, b) => new Date(a.date) - new Date(b.date));
-  if (sorted.length < 2) {
-    canvas.style.display = 'none'; empty.style.display = 'flex'; return;
-  }
-  canvas.style.display = 'block'; empty.style.display = 'none';
-  const labels = sorted.map(m => m.date);
-  let data, label, color, yReverse;
-  if (mode === 'points') {
-    let cumulative = 0;
-    data = sorted.map(m => { const pts = Number(m.total) || 0; cumulative += pts; return cumulative; });
-    label = 'Cumulative Points'; color = '#CB5957'; yReverse = false;
+  let labels, data, label, color, yReverse;
+
+  if (mode === 'rating') {
+    // Use ratingHistory from master
+    const history = parseHistory(currentPlayer?.ratingHistory || '');
+    if (history.length < 2) {
+      canvas.style.display = 'none'; empty.style.display = 'flex'; return;
+    }
+    labels   = history.map(h => h.date);
+    data     = history.map(h => h.value);
+    label    = 'Rating';
+    color    = '#CB5957';
+    yReverse = false;
+
   } else {
-    data = sorted.map(m => Number(m.rank) || null);
-    label = 'Ranking'; color = '#171513'; yReverse = true;
+    // Points — sum total from all Americano matches sorted by date
+    const sorted = [...allMatches]
+      .filter(m => m.date && String(m.matchId).toUpperCase().includes('AM'))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    if (sorted.length < 2) {
+      canvas.style.display = 'none'; empty.style.display = 'flex'; return;
+    }
+    let cumulative = 0;
+    labels   = sorted.map(m => m.date);
+    data     = sorted.map(m => { cumulative += Number(m.total) || 0; return cumulative; });
+    label    = 'Cumulative Points';
+    color    = '#CB5957';
+    yReverse = false;
   }
+
+  canvas.style.display = 'block'; empty.style.display = 'none';
+
   if (perfChart) { perfChart.destroy(); perfChart = null; }
   perfChart = new Chart(canvas, {
     type: 'line',
@@ -365,7 +400,7 @@ function getFiltered(dateOverride, typeOverride) {
     const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30);
     list = list.filter(m => { if (!m.date) return true; const d = new Date(m.date); return isNaN(d) ? true : d >= cutoff; });
   }
-  if (typeVal !== 'all') list = list.filter(m => String(m.matchId).toUpperCase().startsWith(typeVal));
+  if (typeVal !== 'all') list = list.filter(m => String(m.matchId).toUpperCase().includes(typeVal));
   return list;
 }
 
@@ -381,8 +416,8 @@ function renderMatches() {
 
 function buildMatchCard(m, idx) {
   const id        = String(m.matchId || '').toUpperCase();
-  const isAm      = id.startsWith('AM');
-  const isTm      = id.startsWith('TM');
+  const isAm      = id.includes('AM');
+  const isTm      = id.includes('TM');
   const typeKey   = isAm ? 'am' : isTm ? 'tm' : 'ps';
   const typeLabel = isAm ? 'AM' : isTm ? 'TM' : 'PS';
   const typeName  = isAm ? 'Americano' : isTm ? 'Tournament' : 'Personal';
