@@ -438,6 +438,7 @@
         <div class="tab-row">
           <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
           <button class="tab-btn" onclick="switchTab('register')">Register</button>
+          <button class="tab-btn" onclick="switchTab('forgot')" id="forgotTab" style="display:none">Reset</button>
         </div>
 
         <!-- LOGIN FORM -->
@@ -461,6 +462,9 @@
 
           <div class="switch-text">
             Not a member yet? <a href="#" onclick="switchTab('register'); return false;">Register here</a>
+          </div>
+          <div class="switch-text" style="margin-top:10px;">
+            <a href="#" onclick="switchTab('forgot'); return false;">Forgot password?</a>
           </div>
         </div>
 
@@ -498,6 +502,35 @@
             Already have an account? <a href="#" onclick="switchTab('login'); return false;">Log in</a>
           </div>
         </div>
+        <!-- FORGOT PASSWORD PANEL -->
+        <div class="form-panel" id="forgotPanel">
+          <div class="alert alert-error"  id="forgotError"></div>
+          <div class="alert alert-success" id="forgotSuccess"></div>
+
+          <div class="field-group">
+            <label class="field-label" for="forgotPhone">WhatsApp Number</label>
+            <input class="field-input" type="tel" id="forgotPhone" placeholder="98xxxxxxxx"/>
+            <div class="field-hint">Enter your registered number to reset your password.</div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="forgotNewPass">New Password</label>
+            <input class="field-input" type="password" id="forgotNewPass" placeholder="Min. 8 characters"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="forgotConfirmPass">Confirm Password</label>
+            <input class="field-input" type="password" id="forgotConfirmPass" placeholder="Repeat new password"/>
+          </div>
+
+          <button class="submit-btn" id="forgotBtn" onclick="handleForgotPassword()">
+            <span id="forgotBtnText">Reset Password</span>
+            <div class="spinner" id="forgotSpinner"></div>
+          </button>
+
+          <div class="switch-text" style="margin-top:16px;">
+            <a href="#" onclick="switchTab('login'); return false;">← Back to login</a>
+          </div>
+        </div>
+
       </div>
 
       <!-- DASHBOARD (shown after login) -->
@@ -550,11 +583,18 @@ const APPS_SCRIPT_URL = PLAYERS_API;
 // ─── TAB SWITCHING ────────────────────────────────────────
 function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+    b.classList.toggle('active',
+      (i === 0 && tab === 'login') ||
+      (i === 1 && tab === 'register')
+    );
   });
-  document.getElementById('loginPanel').classList.toggle('active', tab === 'login');
+  document.getElementById('loginPanel').classList.toggle('active',    tab === 'login');
   document.getElementById('registerPanel').classList.toggle('active', tab === 'register');
-  document.getElementById('formTitle').innerHTML = tab === 'login' ? 'Welcome<br/>back.' : 'Join the<br/>collective.';
+  document.getElementById('forgotPanel').classList.toggle('active',   tab === 'forgot');
+  // Show/hide forgot tab button
+  document.getElementById('forgotTab').style.display = tab === 'forgot' ? 'inline-block' : 'none';
+  const titles = { login: 'Welcome<br/>back.', register: 'Join the<br/>collective.', forgot: 'Reset your<br/>password.' };
+  document.getElementById('formTitle').innerHTML = titles[tab] || titles.login;
   clearAlerts();
 }
 
@@ -727,6 +767,42 @@ function showDashboard(player, matches) {
   }
 }
 
+// ─── FORGOT PASSWORD ──────────────────────────────────────
+async function handleForgotPassword() {
+  clearAlerts();
+  const phone    = document.getElementById('forgotPhone').value.trim();
+  const newPass  = document.getElementById('forgotNewPass').value;
+  const confirm  = document.getElementById('forgotConfirmPass').value;
+
+  if (!phone || !newPass || !confirm) {
+    showAlert('forgotError', 'Please fill in all fields.'); return;
+  }
+  if (newPass.length < 8) {
+    showAlert('forgotError', 'Password must be at least 8 characters.'); return;
+  }
+  if (newPass !== confirm) {
+    showAlert('forgotError', 'Passwords do not match.'); return;
+  }
+
+  setLoading('forgot', true);
+
+  try {
+    const res  = await fetch(PLAYERS_API, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify({ action: 'updatePassword', phone, newPassword: newPass })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Reset failed.');
+    showAlert('forgotSuccess', 'Password reset! You can now log in.');
+    setTimeout(() => switchTab('login'), 2000);
+  } catch(e) {
+    showAlert('forgotError', e.message);
+  } finally {
+    setLoading('forgot', false);
+  }
+}
+
 function handleLogout() {
   localStorage.removeItem('dpcPlayerSession');
   localStorage.removeItem('dpcPlayerPhone');
@@ -748,8 +824,8 @@ function redirectIfLoggedIn() {
 // Enter key support
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
-  const loginActive = document.getElementById('loginPanel').classList.contains('active');
-  if (loginActive) handleLogin();
+  if (document.getElementById('loginPanel').classList.contains('active'))  handleLogin();
+  else if (document.getElementById('forgotPanel').classList.contains('active')) handleForgotPassword();
   else handleRegister();
 });
 
