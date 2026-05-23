@@ -216,7 +216,6 @@ nav{
         <div class="stat-card">
           <div class="stat-num" id="heroRating">—</div>
           <div class="stat-label">Rating</div>
-          <div class="stat-sub" id="heroRatingSub">—</div>
         </div>
       </div>
 
@@ -299,7 +298,12 @@ function showDashboard() {
   const p = currentPlayer;
   document.getElementById('heroName').textContent     = p.name  || '—';
   document.getElementById('heroRating').textContent   = p.rating ?? '—';
-  document.getElementById('heroSub').textContent      = `${p.venue || '—'} · Member since ${p.joiningDate || '—'}`;
+  // Member since = date of first match
+  const firstMatchDate = allMatches.length
+    ? allMatches.slice().sort((a,b) => new Date(a.date)-new Date(b.date))[0].date
+    : null;
+  const memberSince = firstMatchDate ? formatDate(firstMatchDate) : (p.joiningDate || '—');
+  document.getElementById('heroSub').textContent = `${p.venue || 'Delhi'} · Member since ${memberSince}`;
   document.getElementById('statRank').textContent     = p.ranking ? '#' + p.ranking : '—';
   // Total points calculated from all Americano match totals
   const totalPts = allMatches
